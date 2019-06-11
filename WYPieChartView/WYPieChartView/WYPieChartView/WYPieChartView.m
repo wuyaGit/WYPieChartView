@@ -9,7 +9,9 @@
 #import "WYPieChartView.h"
 #import "WYPieCenterView.h"
 
-#define CHART_MARGIN 50
+#define CHART_MARGIN(min) (((min)<200)?20:30)
+#define CHART_CENTER(min) (((min)<200)?70:100)
+#define CHART_RADIUS_MAX(radius) ((radius)>110?110:radius)
 
 #define COLOR_ARRAY @[\
 [UIColor colorWithRed:251/255.0 green:166.9/255.0 blue:96.5/255.0 alpha:1],\
@@ -71,10 +73,12 @@
     CGFloat min = CGRectGetWidth(self.bounds) > CGRectGetHeight(self.bounds) ? CGRectGetHeight(self.bounds) : CGRectGetWidth(self.bounds);
     
     CGPoint center =  CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    CGFloat radius = min * 0.5 - CHART_MARGIN;
+    CGFloat radius = min * 0.5 - CHART_MARGIN(min);
     CGFloat start = -0.25 * M_PI * 2; //起始点为最顶点
     CGFloat angle = 0;
     CGFloat end = start;
+
+    radius = CHART_RADIUS_MAX(radius);
 
     if (self.dataArray.count == 0) {
         end = start + M_PI * 2;
@@ -149,7 +153,7 @@
     
     // 在中心添加圆
     WYPieCenterView *centerView = [[WYPieCenterView alloc] init];
-    centerView.frame = CGRectMake(0, 0, 100, 100);
+    centerView.frame = CGRectMake(0, 0, CHART_CENTER(min), CHART_CENTER(min));
     centerView.center = center;
     centerView.nameLabel.text = self.title;
     
